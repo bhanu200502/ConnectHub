@@ -1,0 +1,134 @@
+{% extends 'social/base.html' %}
+
+{% block title %}Home Feed{% endblock %}
+
+{% block content %}
+<div class="feed-container">
+
+    <!-- LEFT SIDEBAR -->
+    <div class="left-sidebar">
+        <div class="profile-card">
+            {% if user.profile.profile_picture %}
+                <img src="{{ user.profile.profile_picture.url }}"
+                    alt="Profile" class="sidebar-avatar">
+            {% else %}
+                <div class="default-avatar">👤</div>
+            {% endif %}
+            <h3>{{ user.username }}</h3>
+            <p>{{ user.email }}</p>
+            <a href="{% url 'profile' user.username %}" class="btn-view">
+                View Profile
+            </a>
+        </div>
+    </div>
+
+    <!-- MAIN FEED -->
+    <div class="main-feed">
+        {% if posts %}
+            {% for post in posts %}
+            <div class="post-card">
+
+                <!-- POST HEADER -->
+                <div class="post-header">
+                    <a href="{% url 'profile' post.user.username %}">
+                        {% if post.user.profile.profile_picture %}
+                            <img src="{{ post.user.profile.profile_picture.url }}"
+                                alt="Profile" class="post-avatar">
+                        {% else %}
+                            <div class="default-avatar-small">👤</div>
+                        {% endif %}
+                    </a>
+                    <div class="post-user-info">
+                        <a href="{% url 'profile' post.user.username %}">
+                            <strong>{{ post.user.username }}</strong>
+                        </a>
+                        <p>{{ post.created_at|date:"d M Y, h:i A" }}</p>
+                    </div>
+                    {% if post.user == user %}
+                    <div class="post-actions">
+                        <a href="{% url 'delete_post' post.pk %}"
+                            class="btn-delete"
+                            onclick="return confirm('Delete this post?')">
+                            🗑️
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <!-- POST IMAGE -->
+                {% if post.image %}
+                <div class="post-image">
+                    <img src="{{ post.image.url }}" alt="Post Image">
+                </div>
+                {% endif %}
+
+                <!-- POST CAPTION -->
+                <div class="post-caption">
+                    <p><strong>{{ post.user.username }}</strong> {{ post.caption }}</p>
+                </div>
+
+                <!-- POST FOOTER -->
+                <div class="post-footer">
+                    <div class="post-stats">
+                        <!-- LIKE BUTTON -->
+                        < class="like-btn {% if post.id in liked_posts %}liked{% endif %}"
+                            data-post-id="{{ post.id }}"
+                            onclick="likePost({{ post.id }}, this)">
+                            {% if post.id in liked_posts %}❤️{% else %}🤍{% endif %}
+                            <span class="likes-count">{{ post.get_likes_count }}</span>
+                        </button>
+
+                        <!-- COMMENT LINK -->
+                        <a href="{% url 'post_detail' post.pk %}" class="comment-btn">
+                            💬 {{ post.get_comments_count }}
+                        </a>
+                    </div>
+
+                    <a href="{% url 'post_detail' post.pk %}" class="view-comments">
+                        View all comments
+                    </a>
+                </div>
+
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="empty-feed">
+                <h3>No posts yet! 😕</h3>
+                <p>Follow some users or create your first post!</p>
+                <a href="{% url 'create_post' %}" class="btn-primary">
+                    Create Post
+                </a>
+            </div>
+        {% endif %}
+    </div>
+
+    <!-- RIGHT SIDEBAR -->
+    <div class="right-sidebar">
+        <div class="suggested-users">
+            <h3>Suggested Users</h3>
+            {% for suggested_user in suggested_users %}
+            <div class="suggested-user">
+                {% if suggested_user.profile.profile_picture %}
+                    <img src="{{ suggested_user.profile.profile_picture.url }}"
+                        alt="Profile" class="suggested-avatar">
+                {% else %}
+                    <div class="default-avatar-small">👤</div>
+                {% endif %}
+                <div class="suggested-info">
+                    <a href="{% url 'profile' suggested_user.username %}">
+                        <strong>{{ suggested_user.username }}</strong>
+                    </a>
+                </div>
+                <a href="{% url 'follow_user' suggested_user.username %}"
+                    class="btn-follow">
+                    Follow
+                </a>
+            </div>
+            {% empty %}
+            <p>No suggestions!</p>
+            {% endfor %}
+        </div>
+    </div>
+
+</div>
+{% endblock %}

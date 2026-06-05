@@ -1,0 +1,132 @@
+{% extends 'social/base.html' %}
+
+{% block title %}My Dashboard{% endblock %}
+
+{% block content %}
+<div class="dashboard-container">
+
+    <!-- DASHBOARD HEADER -->
+    <div class="dashboard-header">
+        <h2>📊 My Dashboard</h2>
+        <p>Welcome back, <strong>{{ user.username }}</strong>!</p>
+    </div>
+
+    <!-- STATS CARDS -->
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-icon">📝</div>
+            <div class="stat-info">
+                <h3>{{ posts.count }}</h3>
+                <p>Total Posts</p>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon">👥</div>
+            <div class="stat-info">
+                <h3>{{ followers_count }}</h3>
+                <p>Followers</p>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon">➕</div>
+            <div class="stat-info">
+                <h3>{{ following_count }}</h3>
+                <p>Following</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- DASHBOARD GRID -->
+    <div class="dashboard-grid">
+
+        <!-- PROFILE CARD -->
+        <div class="profile-card-dash">
+            <h3>👤 Profile</h3>
+            <div class="dash-avatar">
+                {% if profile.profile_picture %}
+                    <img src="{{ profile.profile_picture.url }}"
+                        alt="Profile" class="dash-pic">
+                {% else %}
+                    <div class="default-avatar-large">👤</div>
+                {% endif %}
+            </div>
+            <div class="dash-profile-info">
+                <div class="dash-row">
+                    <span>Username:</span>
+                    <span>{{ user.username }}</span>
+                </div>
+                <div class="dash-row">
+                    <span>Email:</span>
+                    <span>{{ user.email }}</span>
+                </div>
+                <div class="dash-row">
+                    <span>Joined:</span>
+                    <span>{{ user.date_joined|date:"d M Y" }}</span>
+                </div>
+                {% if profile.bio %}
+                <div class="dash-row">
+                    <span>Bio:</span>
+                    <span>{{ profile.bio }}</span>
+                </div>
+                {% endif %}
+            </div>
+            <div class="dash-buttons">
+                <a href="{% url 'edit_profile' %}" class="btn-primary">
+                    ✏️ Edit Profile
+                </a>
+                <a href="{% url 'create_post' %}" class="btn-secondary">
+                    ➕ New Post
+                </a>
+            </div>
+        </div>
+
+        <!-- RECENT POSTS -->
+        <div class="recent-posts-dash">
+            <h3>📝 My Recent Posts</h3>
+            {% if posts %}
+                {% for post in posts|slice:":5" %}
+                <div class="dash-post-item">
+                    <div class="dash-post-image">
+                        {% if post.image %}
+                            <img src="{{ post.image.url }}"
+                                alt="Post" class="dash-post-pic">
+                        {% else %}
+                            <div class="no-image-small">📝</div>
+                        {% endif %}
+                    </div>
+                    <div class="dash-post-info">
+                        <p>{{ post.caption|truncatechars:50 }}</p>
+                        <span>{{ post.created_at|date:"d M Y" }}</span>
+                    </div>
+                    <div class="dash-post-stats">
+                        <span>❤️ {{ post.get_likes_count }}</span>
+                        <span>💬 {{ post.get_comments_count }}</span>
+                    </div>
+                    <div class="dash-post-actions">
+                        <a href="{% url 'post_detail' post.pk %}"
+                            class="btn-view">View</a>
+                        <a href="{% url 'delete_post' post.pk %}"
+                            class="btn-delete-small"
+                            onclick="return confirm('Delete?')">🗑️</a>
+                    </div>
+                </div>
+                {% endfor %}
+                <a href="{% url 'profile' user.username %}"
+                    class="btn-view-all">
+                    View All Posts →
+                </a>
+            {% else %}
+                <div class="no-posts">
+                    <p>No posts yet!</p>
+                    <a href="{% url 'create_post' %}" class="btn-primary">
+                        Create First Post
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+
+    </div>
+</div>
+{% endblock %}

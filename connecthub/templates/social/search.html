@@ -1,0 +1,84 @@
+{% extends 'social/base.html' %}
+
+{% block title %}Search Users{% endblock %}
+
+{% block content %}
+<div class="search-container">
+    <h2 class="section-title">🔍 Search Users</h2>
+
+    <!-- SEARCH FORM -->
+    <div class="search-box">
+        <form action="{% url 'search_users' %}" method="GET">
+            <input type="text" name="q"
+                value="{{ query|default:'' }}"
+                placeholder="Search by username..."
+                class="search-input">
+            <button type="submit" class="btn-search">
+                Search
+            </button>
+        </form>
+    </div>
+
+    <!-- SEARCH RESULTS -->
+    {% if query %}
+        <h3 class="results-title">
+            Results for "{{ query }}"
+        </h3>
+
+        {% if users %}
+        <div class="search-results">
+            {% for search_user in users %}
+            <div class="search-user-card">
+
+                <!-- AVATAR -->
+                <div class="search-avatar">
+                    {% if search_user.profile.profile_picture %}
+                        <img src="{{ search_user.profile.profile_picture.url }}"
+                            alt="Profile" class="search-pic">
+                    {% else %}
+                        <div class="default-avatar">👤</div>
+                    {% endif %}
+                </div>
+
+                <!-- USER INFO -->
+                <div class="search-user-info">
+                    <h3>{{ search_user.username }}</h3>
+                    <p>{{ search_user.email }}</p>
+                    {% if search_user.profile.bio %}
+                        <p class="search-bio">
+                            {{ search_user.profile.bio|truncatechars:60 }}
+                        </p>
+                    {% endif %}
+                </div>
+
+                <!-- ACTIONS -->
+                <div class="search-actions">
+                    <a href="{% url 'profile' search_user.username %}"
+                        class="btn-view">
+                        View Profile
+                    </a>
+                    <a href="{% url 'follow_user' search_user.username %}"
+                        class="btn-follow">
+                        Follow
+                    </a>
+                </div>
+
+            </div>
+            {% endfor %}
+        </div>
+
+        {% else %}
+        <div class="no-results">
+            <p>😕 No users found for "{{ query }}"</p>
+            <p>Try searching with a different username!</p>
+        </div>
+        {% endif %}
+
+    {% else %}
+    <div class="search-placeholder">
+        <p>👆 Type a username to search!</p>
+    </div>
+    {% endif %}
+
+</div>
+{% endblock %}

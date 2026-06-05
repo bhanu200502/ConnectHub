@@ -1,0 +1,55 @@
+{% extends 'social/base.html' %}
+
+{% block title %}Register{% endblock %}
+
+{% block content %}
+<section class="auth-section">
+    <div class="auth-container">
+        <h2>Join ConnectHub! 👋</h2>
+        <p class="auth-subtitle">Connect with friends and share moments</p>
+
+        {% if messages %}
+            {% for message in messages %}
+                <div class="message {{ message.tags }}">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+
+        <form action="{% url 'register' %}" method="POST" class="auth-form">
+            {% csrf_token %}
+
+            <div class="form-group">
+                <label>Username</label>
+                <input type="text" name="username"
+                    placeholder="Enter username" required>
+            </div>
+
+            <div class="form-group">
+                <label>Email Address</label>
+                <input type="email" name="email"
+                    placeholder="Enter email" required>
+            </div>
+
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" name="password"
+                    placeholder="Enter password" required>
+            </div>
+
+            <div class="form-group">
+                <label>Confirm Password</label>
+                <input type="password" name="confirm_password"
+                    placeholder="Confirm password" required>
+            </div>
+
+            <button type="submit" class="btn-submit">
+                Create Account
+            </button>
+        </form>
+
+        <p class="auth-link">
+            Already have an account?
+            <a href="{% url 'login' %}">Login here</a>
+        </p>
+    </div>
+</section>
+{% endblock %}

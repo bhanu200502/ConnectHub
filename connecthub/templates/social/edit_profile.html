@@ -1,0 +1,66 @@
+{% extends 'social/base.html' %}
+
+{% block title %}Edit Profile{% endblock %}
+
+{% block content %}
+<section class="auth-section">
+    <div class="auth-container">
+        <h2>Edit Profile ✏️</h2>
+        <p class="auth-subtitle">Update your profile information</p>
+
+        {% if messages %}
+            {% for message in messages %}
+                <div class="message {{ message.tags }}">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+
+        <form action="{% url 'edit_profile' %}" method="POST"
+            enctype="multipart/form-data" class="auth-form">
+            {% csrf_token %}
+
+            <!-- CURRENT PROFILE PICTURE -->
+            <div class="current-avatar">
+                {% if profile.profile_picture %}
+                    <img src="{{ profile.profile_picture.url }}"
+                        alt="Profile" class="edit-avatar">
+                {% else %}
+                    <div class="default-avatar-large">👤</div>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label>Profile Picture</label>
+                <input type="file" name="profile_picture"
+                    accept="image/*">
+            </div>
+
+            <div class="form-group">
+                <label>Username</label>
+                <input type="text" value="{{ user.username }}"
+                    disabled class="disabled-input">
+            </div>
+
+            <div class="form-group">
+                <label>Email</label>
+                <input type="email" value="{{ user.email }}"
+                    disabled class="disabled-input">
+            </div>
+
+            <div class="form-group">
+                <label>Bio</label>
+                <textarea name="bio" rows="4"
+                    placeholder="Write something about yourself...">{{ profile.bio }}</textarea>
+            </div>
+
+            <button type="submit" class="btn-submit">
+                Save Changes
+            </button>
+
+            <a href="{% url 'profile' user.username %}"
+                class="btn-cancel">
+                Cancel
+            </a>
+        </form>
+    </div>
+</section>
+{% endblock %}

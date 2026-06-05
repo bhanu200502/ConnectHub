@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ConnectHub - {% block title %}Social Media{% endblock %}</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+    <div class="nav-container">
+        <a href="{% url 'home' %}" class="logo">💬 ConnectHub</a>
+
+        <div class="nav-search">
+            <form action="{% url 'search_users' %}" method="GET">
+                <input type="text" name="q" placeholder="🔍 Search users...">
+                <button type="submit">Search</button>
+            </form>
+        </div>
+
+        <div class="nav-links">
+            {% if user.is_authenticated %}
+                <a href="{% url 'home' %}">🏠 Home</a>
+                <a href="{% url 'create_post' %}">➕ Post</a>
+                <a href="{% url 'profile' user.username %}">👤 Profile</a>
+                <a href="{% url 'dashboard' %}">📊 Dashboard</a>
+                <a href="{% url 'logout' %}">Logout</a>
+                <span class="welcome">Hi, {{ user.username }}!</span>
+            {% else %}
+                <a href="{% url 'login' %}">Login</a>
+                <a href="{% url 'register' %}">Register</a>
+            {% endif %}
+        </div>
+    </div>
+</nav>
+
+<!-- MESSAGES -->
+{% if messages %}
+<div class="messages">
+    {% for message in messages %}
+        <div class="message {{ message.tags }}">
+            {{ message }}
+        </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+<!-- MAIN CONTENT -->
+<main class="main-content">
+    {% block content %}
+    {% endblock %}
+</main>
+
+<!-- FOOTER -->
+<footer class="footer">
+    <div class="footer-container">
+        <p>© 2024 ConnectHub. All rights reserved.</p>
+        <p>Built with Django & Python</p>
+    </div>
+</footer>
+
+<script src="{% static 'js/main.js' %}"></script>
+</body>
+</html>

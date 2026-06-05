@@ -1,0 +1,51 @@
+{% extends 'social/base.html' %}
+
+{% block title %}Create Post{% endblock %}
+
+{% block content %}
+<section class="auth-section">
+    <div class="auth-container">
+        <h2>Create New Post ➕</h2>
+        <p class="auth-subtitle">Share your moment with the world!</p>
+
+        {% if messages %}
+            {% for message in messages %}
+                <div class="message {{ message.tags }}">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+
+        <form action="{% url 'create_post' %}" method="POST"
+            enctype="multipart/form-data" class="auth-form">
+            {% csrf_token %}
+
+            <!-- IMAGE PREVIEW -->
+            <div class="image-preview" id="imagePreview">
+                <p>📷 Click to preview image</p>
+            </div>
+
+            <div class="form-group">
+                <label>Upload Image (Optional)</label>
+                <input type="file" name="image"
+                    accept="image/*"
+                    id="imageInput"
+                    onchange="previewImage(this)">
+            </div>
+
+            <div class="form-group">
+                <label>Caption</label>
+                <textarea name="caption" rows="4"
+                    placeholder="Write a caption..."
+                    required></textarea>
+            </div>
+
+            <button type="submit" class="btn-submit">
+                Share Post 🚀
+            </button>
+
+            <a href="{% url 'home' %}" class="btn-cancel">
+                Cancel
+            </a>
+        </form>
+    </div>
+</section>
+{% endblock %}

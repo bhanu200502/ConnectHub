@@ -1,0 +1,43 @@
+{% extends 'social/base.html' %}
+
+{% block title %}Login{% endblock %}
+
+{% block content %}
+<section class="auth-section">
+    <div class="auth-container">
+        <h2>Welcome Back! 👋</h2>
+        <p class="auth-subtitle">Login to your ConnectHub account</p>
+
+        {% if messages %}
+            {% for message in messages %}
+                <div class="message {{ message.tags }}">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+
+        <form action="{% url 'login' %}" method="POST" class="auth-form">
+            {% csrf_token %}
+
+            <div class="form-group">
+                <label>Username</label>
+                <input type="text" name="username"
+                    placeholder="Enter username" required>
+            </div>
+
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" name="password"
+                    placeholder="Enter password" required>
+            </div>
+
+            <button type="submit" class="btn-submit">
+                Login
+            </button>
+        </form>
+
+        <p class="auth-link">
+            Don't have an account?
+            <a href="{% url 'register' %}">Register here</a>
+        </p>
+    </div>
+</section>
+{% endblock %}
